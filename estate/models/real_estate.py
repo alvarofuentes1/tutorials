@@ -1,7 +1,7 @@
 from odoo import models, fields
 
-class TestModel(models.Model):
-    _name = "test_model"
+class RealEstate(models.Model):
+    _name = "real_estate"
     _description = "Esta es la descripcion de la tabla test model"
 
     name = fields.Char(required=True)
