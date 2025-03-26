@@ -6,6 +6,12 @@
         <field name="model">real_estate</field>
         <field name="arch" type="xml">
             <form string="Properties">
+                <header>
+                    <button name="action_set_sold" type="object" string="Sold" class="btn-primary" />
+                    <button name="action_set_cancel" type="object" string="Cancel"
+                        class="btn-secondary" />
+                    <field name="state" widget="statusbar" />
+                </header>
                 <sheet>
                     <group>
                         <field name="name" />
@@ -48,6 +54,10 @@
                                     <field name="price" />
                                     <field name="partner_id" />
                                     <field name="validity" />
+                                    <button name="action_accept" type="object" icon="fa-check"
+                                        title="Aceptar oferta" />
+                                    <button name="action_refuse" type="object" icon="fa-times"
+                                        title="Rechazar oferta" />
                                     <field name="date_deadline" />
                                     <field name="status" />
                                 </list>
@@ -66,6 +76,31 @@
                 </sheet>
             </form>
 
+        </field>
+    </record>
+
+    <record id="view_estate_property_type_form" model="ir.ui.view">
+        <field name="name">real_estate_type.form</field>
+        <field name="model">real_estate_type</field>
+        <field name="arch" type="xml">
+            <form string="Property Type">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                    </group>
+                    <notebook>
+                        <page string="Properties">
+                            <field name="property_ids">
+                                <list>
+                                    <field name="name" />
+                                    <field name="expected_price" />
+                                    <field name="state" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
     </record>
 

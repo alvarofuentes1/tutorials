@@ -1,9 +1,12 @@
-import apt
+
 from odoo import models, fields, api
+from odoo.exceptions import UserError, ValidationError
+
 
 class RealEstate(models.Model):
     _name = "real_estate"
     _description = "Propiedades(casas)"
+    _order = "id desc"
 
     name = fields.Char(required=True)
     description = fields.Text()
@@ -17,14 +20,12 @@ class RealEstate(models.Model):
     garage = fields.Boolean()
     garden = fields.Boolean()
     garden_area = fields.Integer()
-    
     garden_orientation = fields.Selection([
         ('north', 'North'),
         ('south', 'South'),
         ('east', 'East'),
         ('west', 'West')
     ])
-    
     property_type = fields.Many2one("real_estate_type")
     property_salesperson = fields.Many2one("res.users", string="Salesperson", default=lambda self: self.env.user)
     property_buyer = fields.Many2one("res.partner", string="Buyer", copy=False)
@@ -32,6 +33,24 @@ class RealEstate(models.Model):
     offer_ids = fields.One2many("real_estate_offer", "property_id")
     total_area = fields.Integer(compute="_compute_total_area")
     best_offer = fields.Float(compute="_compute_best_offer")
+    state = fields.Selection([
+        ('new', 'New'),
+        ('offer_received', 'Offer Received'),
+        ('sold', 'Sold'),
+        ('canceled', 'Canceled')
+    ], default='new')
+
+    def action_set_sold(self):
+        for record in self:
+            if record.state == 'canceled':
+                raise UserError("A canceled property cannot be sold.")
+            record.state = 'sold'
+
+    def action_set_cancel(self):
+        for record in self:
+            if record.state == 'sold':
+                raise UserError("A sold property cannot be canceled.")
+            record.state = 'canceled'
     
     @api.depends("living_area", "garden_area")
     def _compute_total_area(self):
@@ -51,3 +70,11 @@ class RealEstate(models.Model):
         else:
             self.garden_area = 0
             self.garden_orientation = False 
+            
+    @api.constrains("expected_price", "selling_price")
+    def _check_prices(self):
+        for property in self:
+            if property.expected_price <= 0:
+                raise ValidationError("The expected price must be strictly positive!")
+            if property.selling_price and property.selling_price < property.expected_price*0.9:
+                raise ValidationError("The selling price must be al least 90% of the expected price!")
