@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="real_estate_search_view" model="ir.ui.view">
+        <field name="name">real_estate.search</field>
+        <field name="model">real_estate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="postcode" />
+                <field name="expected_price" />
+                <field name="bedrooms" />
+                <field name="living_area" />
+                <field name="facades" />
+
+                <filter name="available" string="Available"
+                    domain="[('date_availability', '&lt;', context_today())]" />
+
+                <group expand="0" string="Group By">
+                    <filter name="group_by_postcode" string="Postcode"
+                        context="{'group_by': 'postcode'}" />
+                    <filter name="group_by_bedrooms" string="Bedrooms"
+                        context="{'group_by': 'bedrooms'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

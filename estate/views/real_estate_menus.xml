@@ -1,7 +1,15 @@
 <odoo>
-    <menuitem id="test_menu_root" name="Propiedades">
-        <menuitem id="second_level" name="Menú">
-            <menuitem id="third_level" action="action_real_estate" />
-        </menuitem>
-    </menuitem>
+    <!-- Menú principal -->
+    <menuitem id="menu_real_estate" name="Propiedades"/>
+
+    <!-- Submenús dentro de "Propiedades" -->
+    <menuitem id="menu_real_estate_main" name="Menú" parent="menu_real_estate"/>
+    <menuitem id="menu_real_estate_settings" name="Ajustes" parent="menu_real_estate"/>
+
+    <!-- Opciones dentro del submenú "Menú" -->
+    <menuitem id="menu_real_estate_list" action="action_real_estate" parent="menu_real_estate_main"/>
+
+    <!-- Opciones dentro del submenú "Ajustes" -->
+    <menuitem id="menu_property_types" action="action_property_type" parent="menu_real_estate_settings"/>
+    <menuitem id="menu_property_tags" action="action_property_tag" parent="menu_real_estate_settings"/>
 </odoo>

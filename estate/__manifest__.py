@@ -8,8 +8,12 @@
         #Security
         'security/ir.model.access.csv',
         #Views
-        'views/real_estate_views.xml',
-        'views/real_estate_menus.xml'
+        'views/real_estate_actions.xml',
+        'views/real_estate_menus.xml',
+        'views/real_estate_form.xml',
+        'views/real_estate_search.xml',
+        'views/real_estate_list.xml'
+        
     ],
     'license': 'LGPL-3',
     'application': 'True',

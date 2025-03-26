@@ -1,0 +1,20 @@
+<odoo>
+
+
+    <record id="real_estate_tree_view" model="ir.ui.view">
+        <field name="name">real_estate.tree</field>
+        <field name="model">real_estate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="selling_price" />
+                <field name="living_area" />
+                <field name="bedrooms" />
+                <field name="garage" />
+                <field name="garden" />
+                <field name="postcode" />
+            </list>
+        </field>
+    </record>
+
+</odoo>
