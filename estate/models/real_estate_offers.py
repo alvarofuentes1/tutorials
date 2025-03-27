@@ -18,6 +18,7 @@ class PropertyOffer(models.Model):
         ('accepted', 'Accepted'),
         ('refused', 'Refused')
     ], default='pending')
+    property_type_id = fields.Many2one("real_estate_type", related='property_id.property_type', store=True)
     
     def action_accept(self):
         for offer in self:
@@ -25,7 +26,7 @@ class PropertyOffer(models.Model):
                 raise UserError("You cannot accept an offer for a sold property.")
             offer.status = 'accepted'
             offer.property_id.selling_price = offer.price
-            offer.property_id.state = 'offer_received'
+            offer.property_id.state = 'offer_accepted'
             
             other_offers = offer.property_id.offer_ids - offer
             other_offers.write({'status': 'refused'})
@@ -33,6 +34,28 @@ class PropertyOffer(models.Model):
     def action_refuse(self):
         for offer in self:
             offer.status = 'refused'
+            
+            # Verificar si quedan ofertas aceptadas
+            accepted_offers = offer.property_id.offer_ids.filtered(lambda o: o.status == 'accepted')
+        
+            # Si no hay ofertas aceptadas, cambiar el estado a "offer_received"
+            if not accepted_offers:
+                offer.property_id.state = 'offer_received'
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Si es un solo dict (caso más común), lo convertimos en lista
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+
+        new_records = []
+        for vals in vals_list:
+            property_id = self.env["real_estate"].browse(vals["property_id"])
+            # ... haz lo que tengas que hacer aquí ...
+            new_record = super().create(vals)
+            new_records.append(new_record)
+
+        return new_records[0] if len(new_records) == 1 else new_records
     
     @api.depends("validity")
     def _compute_set_deadline(self):
@@ -48,3 +71,9 @@ class PropertyOffer(models.Model):
         for offer in self:
             if offer.price <= 0:
                 raise ValidationError("The offer price must be strictly positive!")
+            
+    @api.constrains("property_id")
+    def _check_property_state(self):
+        for offer in self:
+            if offer.property_id.state in ["offer_accepted", "sold", "canceled"]:
+                raise ValidationError("You cannot add an offer when the property is in 'Offer Accepted', 'Sold', or 'Canceled' state.")

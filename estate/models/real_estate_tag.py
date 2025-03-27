@@ -8,6 +8,8 @@ class PropertyTag(models.Model):
     _order = "name"
     
     name = fields.Char(required=True)
+    color = fields.Integer()
+    sequence = fields.Integer(default=10)
     
     @api.constrains("name")
     def _check_unique_name(self):

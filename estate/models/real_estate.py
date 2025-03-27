@@ -36,6 +36,7 @@ class RealEstate(models.Model):
     state = fields.Selection([
         ('new', 'New'),
         ('offer_received', 'Offer Received'),
+        ('offer_accepted', 'Offer Accepted'),
         ('sold', 'Sold'),
         ('canceled', 'Canceled')
     ], default='new')
@@ -78,3 +79,9 @@ class RealEstate(models.Model):
                 raise ValidationError("The expected price must be strictly positive!")
             if property.selling_price and property.selling_price < property.expected_price*0.9:
                 raise ValidationError("The selling price must be al least 90% of the expected price!")
+            
+    def unlink(self):
+        for property in self:
+            if property.state not in ('new', 'canceled'):
+                raise UserError("You can only delete properties that are in 'New' or 'Cancelled' state.")
+        return super(RealEstate, self).unlink()
