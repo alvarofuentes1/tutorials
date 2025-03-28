@@ -6,10 +6,10 @@
     "category": "Real Estate",
     "summary": "Accounting integration for estate module",
     "description": "Linking estate with accounting features.",
-    "data": 
+    "data":
         [
             #Security
-            
+
             #Views    
         ],
     'license': 'LGPL-3',

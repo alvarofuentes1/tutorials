@@ -1,7 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
-
 class PropertyTag(models.Model):
     _name = "real_estate_tag"
     _description = "Etiquetas de la propiedad"
@@ -13,6 +12,7 @@ class PropertyTag(models.Model):
     
     @api.constrains("name")
     def _check_unique_name(self):
+        # Verifica que no se añadan dos tags iguales
         for tag in self:
             existing_types = self.search([
                 ("id", "!=", tag.id),

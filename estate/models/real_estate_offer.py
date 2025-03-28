@@ -23,11 +23,13 @@ class PropertyOffer(models.Model):
     def action_accept(self):
         for offer in self:
             if offer.property_id.state == 'sold':
+                # Si la propiedad ya se ha vendido, no se pueden aceptar más ofertas
                 raise UserError("You cannot accept an offer for a sold property.")
+            # Si no se ha vendido, se cambia el estado de la oferta y se pone su valor en selling_price
             offer.status = 'accepted'
             offer.property_id.selling_price = offer.price
             offer.property_id.state = 'offer_accepted'
-            
+            # Al aceptar una oferta las demas se rechazaran automaticamente
             other_offers = offer.property_id.offer_ids - offer
             other_offers.write({'status': 'refused'})
 

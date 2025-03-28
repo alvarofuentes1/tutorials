@@ -15,6 +15,7 @@ class RealEstateType(models.Model):
 
     @api.depends("offer_ids")
     def _compute_offer_count(self):
+        # Contador = numero de ofertas
         for property_type in self:
             property_type.offer_count = len(property_type.offer_ids)
     

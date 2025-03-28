@@ -42,12 +42,14 @@ class RealEstate(models.Model):
     ], default='new')
 
     def action_set_sold(self):
+        # Establece property.state a 'sold'
         for record in self:
             if record.state == 'canceled':
                 raise UserError("A canceled property cannot be sold.")
             record.state = 'sold'
 
     def action_set_cancel(self):
+        # Establece property.state a 'canceled'
         for record in self:
             if record.state == 'sold':
                 raise UserError("A sold property cannot be canceled.")
@@ -55,16 +57,19 @@ class RealEstate(models.Model):
     
     @api.depends("living_area", "garden_area")
     def _compute_total_area(self):
+        # Da valor a total_area, que sera living_area + garden_area
         for property in self:
             property.total_area = property.living_area + property.garden_area
             
     @api.depends("offer_ids.price")
     def _compute_best_offer(self):
+        # Encuentra la oferta con mayor precio el le da ese valor a best_offer
         for property in self:
             property.best_offer = max(property.offer_ids.mapped('price')) if property.offer_ids else 0
             
     @api.onchange("garden")
     def _onchange_garden(self):
+        # Si se selecciona garden(true), se establecen paramentro iniciales para garden_area y garden_orientation
         if self.garden:  
             self.garden_area = 10
             self.garden_orientation = 'north'
@@ -74,11 +79,13 @@ class RealEstate(models.Model):
             
     @api.constrains("expected_price", "selling_price")
     def _check_prices(self):
-        for property in self:
-            if property.expected_price <= 0:
+        # No permite poner un precio negativo y obliga a que el precio min de venta sea 90% del esperado
+        for record in self:
+            if record.expected_price <= 0:
                 raise ValidationError("The expected price must be strictly positive!")
-            if property.selling_price and property.selling_price < property.expected_price*0.9:
+            if record.selling_price and record.selling_price < record.expected_price*0.9:
                 raise ValidationError("The selling price must be al least 90% of the expected price!")
             
     def unlink(self):
+        # unlink() == delete()
         return super(RealEstate, self).unlink()
