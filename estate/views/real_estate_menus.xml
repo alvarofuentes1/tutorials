@@ -8,6 +8,7 @@
 
     <!-- Opciones dentro del submenú "Menú" -->
     <menuitem id="menu_real_estate_list" action="action_real_estate" parent="menu_real_estate_main"/>
+    <menuitem id="menu_real_estate_kanban" action="real_estate_action_kanban" parent="menu_real_estate_main"/>
 
     <!-- Opciones dentro del submenú "Ajustes" -->
     <menuitem id="menu_property_types" action="action_property_type" parent="menu_real_estate_settings"/>

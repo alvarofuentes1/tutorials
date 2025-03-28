@@ -81,7 +81,4 @@ class RealEstate(models.Model):
                 raise ValidationError("The selling price must be al least 90% of the expected price!")
             
     def unlink(self):
-        for property in self:
-            if property.state not in ('new', 'canceled'):
-                raise UserError("You can only delete properties that are in 'New' or 'Cancelled' state.")
         return super(RealEstate, self).unlink()

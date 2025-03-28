@@ -25,4 +25,10 @@
         <field name="domain">[("property_type_id", "=", active_id)]</field>
     </record>
 
+    <record id="real_estate_action_kanban" model="ir.actions.act_window">
+        <field name="name">Propiedades en Kanban</field>
+        <field name="res_model">real_estate</field>
+        <field name="view_mode">kanban,form</field>
+    </record>
+
 </odoo>
